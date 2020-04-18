@@ -1,1 +1,1 @@
-(icons/ux)
+![](icons/ux)
