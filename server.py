@@ -1,0 +1,108 @@
+#!/usr/bin/env python3
+
+import os, requests, time
+
+class GameServer:
+    def main(self):
+        while True:
+            print("next turn")
+            self.addPlayers()
+            self.updateGameState()
+            time.sleep(15)
+
+    def addPlayers(self):
+        # players request to join via issue
+        joinRequests = requests.get(
+            "https://api.github.com/repos/programical/gitland/issues?state=open",
+            headers={"Accept":"application/vnd.github.v3+json"}
+        ).json()
+
+        for request in joinRequests:
+            newPlayer = request["user"]["login"]
+            team = request["title"]
+
+            # make sure they chose an existing team
+            if team not in ("cg", "cr", "cb"):
+                print(newPlayer, "didn't join - invalid team name")
+                return
+
+            # make sure they aren't already playing
+            for player in os.listdir("players"):
+                if player == newPlayer:
+                    print(newPlayer, "didn't join - already playing")
+
+            self.spawnPlayer(newPlayer, team)
+
+    def addPlayerData(self, player: str, team: str, x: int, y: int):
+        os.makedirs("players/" + player)
+        open("players/" + player + "/team", "w").write(team)
+        open("players/" + player + "/x", "w").write(str(x))
+        open("players/" + player + "/x", "w").write(str(y))
+
+    def spawnPlayer(self, player: str, team: str):
+        # spawn in friendly territory
+        x, y = 0, 0
+        for row in open("map").read().split("\n"):
+            for tile in row.split(","):
+                teamTile = team.replace("c", "u") # lazy hack
+                if tile == teamTile:
+                    self.addPlayerData(player, team, x, y)
+                    print(player, "joined", team, "on", teamTile, x, y)
+                    return
+
+                x += 1
+            y += 1
+
+        # if that fails, try no man's land
+        x, y = 0, 0
+        for row in open("map").read().split("\n"):
+            for tile in row.split(","):
+                if tile == "ux":
+                    self.addPlayerData(player, team, x, y)
+                    print(player, "joined", team, "on ux", x, y)
+                    return
+
+                x += 1
+            y += 1
+
+        # failed. print the team too, for debug purposes
+        print(player, "didn't join", team, "- no free space")
+
+    def loadMap(self) -> list:
+        world = []
+        for row in open("map").read().split("\n"):
+            world.append(row.split(","))
+
+        return world
+
+    def saveMap(self, world: list):
+        open("map", "w").write(self.mapToStr(world))
+
+    def drawMap(self, world: list):
+        # in no way can this ever backfire
+        mapStr = self.mapToStr(world).replace("ux", "![](icons/ux)").replace("ug", "![](icons/ug)").replace("ur", "![](icons/ur)").replace("ub", "![](icons/ub)").replace("cg", "![](icons/cg)").replace("cr", "![](icons/cr)").replace("cb", "![](icons/cb)").replace(",", " ")
+        open("README.md", "w").write(mapStr)
+
+    def mapToStr(self, world: list) -> str:
+        mapString = ""
+        for row in world:
+            mapString += ",".join(row) + "\n"
+        return mapString
+
+    def updateGameState(self):
+        world = self.loadMap()
+        for player in os.listdir("players"):
+            icon = open("players/" + player + "/team").read().strip()
+            x = int(open("players/" + player + "/x").read().strip())
+            y = int(open("players/" + player + "/y").read().strip())
+            world[y][x] = icon
+
+        self.saveMap(world)
+        self.drawMap(world)
+
+def main():
+    server = GameServer()
+    server.main()
+
+if __name__ == "__main__":
+    main()
