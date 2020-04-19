@@ -8,6 +8,7 @@ class GameServer:
             print("next turn")
             self.addPlayers()
             self.updateGameState()
+            print("turn done")
             time.sleep(15)
 
     def addPlayers(self):
@@ -43,6 +44,7 @@ class GameServer:
         # spawn in friendly territory
         x, y = 0, 0
         for row in open("map").read().split("\n"):
+            x = 0
             for tile in row.split(","):
                 teamTile = team.replace("c", "u") # lazy hack
                 if tile == teamTile:
@@ -56,6 +58,7 @@ class GameServer:
         # if that fails, try no man's land
         x, y = 0, 0
         for row in open("map").read().split("\n"):
+            x = 0
             for tile in row.split(","):
                 if tile == "ux":
                     self.addPlayerData(player, team, x, y)
@@ -80,7 +83,7 @@ class GameServer:
 
     def drawMap(self, world: list):
         # in no way can this ever backfire
-        mapStr = self.mapToStr(world).replace("ux", "![](icons/ux)").replace("ug", "![](icons/ug)").replace("ur", "![](icons/ur)").replace("ub", "![](icons/ub)").replace("cg", "![](icons/cg)").replace("cr", "![](icons/cr)").replace("cb", "![](icons/cb)").replace(",", " ").replace("\n", "\n  ")
+        mapStr = self.mapToStr(world).replace("ux", "![](icons/ux)").replace("ug", "![](icons/ug)").replace("ur", "![](icons/ur)").replace("ub", "![](icons/ub)").replace("cg", "![](icons/cg)").replace("cr", "![](icons/cr)").replace("cb", "![](icons/cb)").replace(",", " ").replace("\n", "  \n")
         open("README.md", "w").write(mapStr)
 
     def mapToStr(self, world: list) -> str:
@@ -91,11 +94,23 @@ class GameServer:
 
     def updateGameState(self):
         world = self.loadMap()
+
+        # don't carry over player position data, only control
+        x, y = 0, 0
+        for row in world:
+            x = 0
+            for tile in row:
+                world[y][x] = tile.replace("cg", "ug").replace("cb", "ub").replace("cr", "ur")
+                x += 1
+            y += 1
+
+        # NOW add players
         for player in os.listdir("players"):
-            icon = open("players/" + player + "/team").read().strip()
-            x = int(open("players/" + player + "/x").read().strip())
-            y = int(open("players/" + player + "/y").read().strip())
-            world[y][x] = icon
+            if os.path.isdir("players/" + player):
+                icon = open("players/" + player + "/team").read().strip()
+                x = int(open("players/" + player + "/x").read().strip())
+                y = int(open("players/" + player + "/y").read().strip())
+                world[y][x] = icon
 
         self.saveMap(world)
         self.drawMap(world)
