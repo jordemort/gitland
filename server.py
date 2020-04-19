@@ -31,6 +31,7 @@ class GameServer:
             for player in os.listdir("players"):
                 if player == newPlayer:
                     print(newPlayer, "didn't join - already playing")
+                    return
 
             self.spawnPlayer(newPlayer, team)
 
