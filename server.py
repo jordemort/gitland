@@ -8,7 +8,7 @@ class GameServer:
             print("next turn")
             self.addPlayers()
             self.updateGameState()
-            print("turn done")
+            print("turn done") # TODO automatic git push of new game state
             time.sleep(15)
 
     def addPlayers(self):
@@ -93,6 +93,23 @@ class GameServer:
             mapString += ",".join(row) + "\n"
         return mapString
 
+    def movePlayer(self, playerToMove: str, x: int, y: int):
+        if x < 0 or y < 0 or x > 22 or y > 22:
+            print(playerToMove, "tried to walk out of the map")
+            return
+
+        for player in os.listdir("players"):
+            if os.path.isdir("players/" + player) and player != playerToMove:
+                occupiedX = int(open("players/" + player + "/x").read().strip())
+                occupiedY = int(open("players/" + player + "/y").read().strip())
+                if x == occupiedX and y == occupiedY:
+                    print(playerToMove, "bumped into", player)
+                    return
+
+        open("players/" + playerToMove + "/x", "w").write(str(x))
+        open("players/" + playerToMove + "/x", "w").write(str(y))
+        print(playerToMove, "moved to", x, y)
+
     def updateGameState(self):
         world = self.loadMap()
 
@@ -108,9 +125,30 @@ class GameServer:
         # NOW add players
         for player in os.listdir("players"):
             if os.path.isdir("players/" + player):
+                x = int(open("players/" + player + "/x").read().strip())
+                y = int(open("players/" + player + "/y").read().strip())
+
+                # player input
+                action = requests.get(
+                    "https://raw.githubusercontent.com/" + player + "/gitland-client/master/act"
+                ).text.strip()
+
+                if action == "left":
+                    self.movePlayer(player, x - 1, y)
+                elif action == "right":
+                    self.movePlayer(player, x + 1, y)
+                elif action == "up":
+                    self.movePlayer(player, x, y - 1)
+                elif action == "down":
+                    self.movePlayer(player, x, y + 1)
+                else:
+                    print(player, "didn't do anything")
+
+                # reload after player moves
                 icon = open("players/" + player + "/team").read().strip()
                 x = int(open("players/" + player + "/x").read().strip())
                 y = int(open("players/" + player + "/y").read().strip())
+
                 world[y][x] = icon
 
         self.saveMap(world)
