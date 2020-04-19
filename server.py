@@ -38,7 +38,7 @@ class GameServer:
         os.makedirs("players/" + player)
         open("players/" + player + "/team", "w").write(team)
         open("players/" + player + "/x", "w").write(str(x))
-        open("players/" + player + "/x", "w").write(str(y))
+        open("players/" + player + "/y", "w").write(str(y))
 
     def spawnPlayer(self, player: str, team: str):
         # spawn in friendly territory
