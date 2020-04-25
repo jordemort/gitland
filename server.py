@@ -26,7 +26,7 @@ class GameServer:
         ).json()
 
         for request in joinRequests:
-            newPlayer, team = "", ""
+            print("checking request " + request)
 
             try:
                 newPlayer = request["user"]["login"]
