@@ -8,7 +8,7 @@ class GameServer:
             print("next turn")
             self.addPlayers()
             self.updateGameState()
-            print("turn done") # TODO automatic git push of new game state
+            print("turn done")
             time.sleep(15)
 
     def addPlayers(self):
