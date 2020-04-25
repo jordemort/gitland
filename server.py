@@ -10,8 +10,7 @@ class GameServer:
     def main(self):
         while True:
             self.log("next turn")
-            if self.addPlayers():
-                self.updateGameState()
+            self.updateGameState()
             self.log("turn done")
             os.system("git add -A")
             os.system("git commit -m \"next turn\"")
@@ -30,8 +29,8 @@ class GameServer:
                 newPlayer = request["user"]["login"]
                 team = request["title"]
             except TypeError:
-                self.log("too many API requests - we'll be back soon!")
-                return False
+                self.log("too many API requests - can't add players")
+                return
 
             # make sure they chose an existing team
             if team not in ("cg", "cr", "cb"):
@@ -45,8 +44,6 @@ class GameServer:
                     continue
 
             self.spawnPlayer(newPlayer, team)
-
-        return True
 
     def addPlayerData(self, player: str, team: str, x: int, y: int):
         os.makedirs("players/" + player)
