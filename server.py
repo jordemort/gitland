@@ -29,23 +29,24 @@ class GameServer:
             try:
                 newPlayer = request["user"]["login"]
                 team = request["title"]
-            except Exception as err:
+            except TypeError:
                 self.log("too many API requests - we'll be back soon!")
                 return False
 
             # make sure they chose an existing team
             if team not in ("cg", "cr", "cb"):
                 self.log(newPlayer + " didn't join - invalid team name")
-                return True
+                continue
 
             # make sure they aren't already playing
             for player in os.listdir("players"):
                 if player == newPlayer:
                     self.log(newPlayer + " didn't join - already playing")
-                    return True
+                    continue
 
             self.spawnPlayer(newPlayer, team)
-            return True
+
+        return True
 
     def addPlayerData(self, player: str, team: str, x: int, y: int):
         os.makedirs("players/" + player)
