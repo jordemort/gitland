@@ -122,7 +122,7 @@ class GameServer:
                 x += 1
             y += 1
 
-        # NOW add players
+        # add players
         for player in os.listdir("players"):
             if os.path.isdir("players/" + player):
                 x = int(open("players/" + player + "/x").read().strip())
