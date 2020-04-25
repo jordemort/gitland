@@ -57,7 +57,7 @@ class GameServer:
                 teamTile = team.replace("c", "u") # lazy hack
                 if tile == teamTile:
                     self.addPlayerData(player, team, x, y)
-                    self.log(player + " joined " + team + " on " + teamTile + str(x) + str(y))
+                    self.log(player + " joined " + team + " on " + teamTile + str(x) + "/" + str(y))
                     return
 
                 x += 1
@@ -70,7 +70,7 @@ class GameServer:
             for tile in row.split(","):
                 if tile == "ux":
                     self.addPlayerData(player, team, x, y)
-                    self.log(player + " joined " + team + " on ux " + str(x) + str(y))
+                    self.log(player + " joined " + team + " on ux " + str(x) + "/" + str(y))
                     return
 
                 x += 1
