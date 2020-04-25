@@ -31,13 +31,13 @@ class GameServer:
 
             # make sure they chose an existing team
             if team not in ("cg", "cr", "cb"):
-                self.log(newPlayer, "didn't join - invalid team name")
+                self.log(newPlayer + " didn't join - invalid team name")
                 return
 
             # make sure they aren't already playing
             for player in os.listdir("players"):
                 if player == newPlayer:
-                    self.log(newPlayer, "didn't join - already playing")
+                    self.log(newPlayer + " didn't join - already playing")
                     return
 
             self.spawnPlayer(newPlayer, team)
@@ -57,7 +57,7 @@ class GameServer:
                 teamTile = team.replace("c", "u") # lazy hack
                 if tile == teamTile:
                     self.addPlayerData(player, team, x, y)
-                    self.log(player, "joined", team, "on", teamTile, x, y)
+                    self.log(player + " joined " + team + " on " + teamTile + str(x) + str(y))
                     return
 
                 x += 1
@@ -70,14 +70,14 @@ class GameServer:
             for tile in row.split(","):
                 if tile == "ux":
                     self.addPlayerData(player, team, x, y)
-                    self.log(player, "joined", team, "on ux", x, y)
+                    self.log(player + " joined " + team + " on ux " + str(x) + str(y))
                     return
 
                 x += 1
             y += 1
 
         # failed. print the team too, for debug purposes
-        self.log(player, "didn't join", team, "- no free space")
+        self.log(player + " didn't join " + team + " - no free space")
 
     def loadMap(self) -> list:
         world = []
@@ -102,7 +102,7 @@ class GameServer:
 
     def movePlayer(self, playerToMove: str, x: int, y: int):
         if x < 0 or y < 0 or x > 22 or y > 22:
-            self.log(playerToMove, "tried to walk out of the map")
+            self.log(playerToMove + " tried to walk out of the map")
             return
 
         for player in os.listdir("players"):
@@ -110,12 +110,12 @@ class GameServer:
                 occupiedX = int(open("players/" + player + "/x").read().strip())
                 occupiedY = int(open("players/" + player + "/y").read().strip())
                 if x == occupiedX and y == occupiedY:
-                    self.log(playerToMove, "bumped into", player)
+                    self.log(playerToMove + " bumped into " + player)
                     return
 
         open("players/" + playerToMove + "/x", "w").write(str(x))
         open("players/" + playerToMove + "/x", "w").write(str(y))
-        self.log(playerToMove, "moved to", x, y)
+        self.log(playerToMove + " moved to " + str(x) + str(y))
 
     def updateGameState(self):
         world = self.loadMap()
@@ -149,7 +149,7 @@ class GameServer:
                 elif action == "down":
                     self.movePlayer(player, x, y + 1)
                 else:
-                    self.log(player, "didn't do anything")
+                    self.log(player + " didn't do anything")
 
                 # reload after player moves
                 icon = open("players/" + player + "/team").read().strip()
