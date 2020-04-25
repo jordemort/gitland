@@ -43,10 +43,15 @@ class GameServer:
                 continue
 
             # make sure they aren't already playing
+            playing = False
             for player in os.listdir("players"):
                 if player == newPlayer:
-                    self.log(newPlayer + " didn't join - already playing")
-                    continue
+                    playing = True
+                    break
+
+            if playing:
+                self.log(newPlayer + " didn't join - already playing")
+                continue
 
             self.spawnPlayer(newPlayer, team)
 
