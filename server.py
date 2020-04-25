@@ -35,7 +35,11 @@ class GameServer:
 
             # make sure they chose an existing team
             if team not in ("cg", "cr", "cb"):
-                self.log(newPlayer + " didn't join - invalid team name")
+                if team == "leave":
+                    self.clearPlayerData(newPlayer)
+                    self.log(newPlayer + " left the game")
+                else:
+                    self.log(newPlayer + " didn't join - invalid team name")
                 continue
 
             # make sure they aren't already playing
