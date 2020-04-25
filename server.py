@@ -26,6 +26,8 @@ class GameServer:
         ).json()
 
         for request in joinRequests:
+            newPlayer, team = "", ""
+
             try:
                 newPlayer = request["user"]["login"]
                 team = request["title"]
