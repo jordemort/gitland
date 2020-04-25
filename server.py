@@ -96,7 +96,7 @@ class GameServer:
         blue = round((mapStr.count("cb") + mapStr.count("ub")) / 529 * 100)
         green = round((mapStr.count("cg") + mapStr.count("ug")) / 529 * 100)
         open("README.md", "w").write(
-            mapStr + "\n**R:** " + str(red) + "% **G:** " + str(green) + "% **B:** " + str(blue) + "\n" + open("tutorial").read()
+            mapStr + "\n**R:** " + str(red) + "% **G:** " + str(green) + "% **B:** " + str(blue) + "%\n" + open("tutorial").read()
         )
 
     def mapToStr(self, world: list) -> str:
