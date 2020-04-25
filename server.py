@@ -22,7 +22,7 @@ class GameServer:
         # players request to join via issue
         joinRequests = requests.get(
             "https://api.github.com/repos/programical/gitland/issues?state=open",
-            headers={"Accept":"application/vnd.github.v3+json"}
+            headers={"Accept":"application/vnd.github.v3+json", "Cache-Control": "no-cache", "Pragma": "no-cache"}
         ).json()
 
         for request in joinRequests:
@@ -92,7 +92,12 @@ class GameServer:
     def drawMap(self, world: list):
         # in no way can this ever backfire
         mapStr = self.mapToStr(world).replace("ux", "![](icons/ux)").replace("ug", "![](icons/ug)").replace("ur", "![](icons/ur)").replace("ub", "![](icons/ub)").replace("cg", "![](icons/cg)").replace("cr", "![](icons/cr)").replace("cb", "![](icons/cb)").replace(",", " ").replace("\n", "  \n")
-        open("README.md", "w").write(mapStr)
+        red = (mapStr.count("cr") + mapStr.count("ur")) / 529 * 100
+        blue = (mapStr.count("cb") + mapStr.count("ub")) / 529 * 100
+        green = (mapStr.count("cg") + mapStr.count("ug")) / 529 * 100
+        open("README.md", "w").write(
+            mapStr + "\nR: " + str(red) + "% G: " + str(green) + "% B: " + str(blue) + "\n" + open("tutorial").read()
+        )
 
     def mapToStr(self, world: list) -> str:
         mapString = ""
@@ -137,7 +142,8 @@ class GameServer:
 
                 # player input
                 action = requests.get(
-                    "https://raw.githubusercontent.com/" + player + "/gitland-client/master/act"
+                    "https://raw.githubusercontent.com/" + player + "/gitland-client/master/act",
+                    headers={"Cache-Control": "no-cache", "Pragma": "no-cache"}
                 ).text.strip()
 
                 if action == "left":
