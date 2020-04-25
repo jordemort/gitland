@@ -92,11 +92,11 @@ class GameServer:
     def drawMap(self, world: list):
         # in no way can this ever backfire
         mapStr = self.mapToStr(world).replace("ux", "![](icons/ux)").replace("ug", "![](icons/ug)").replace("ur", "![](icons/ur)").replace("ub", "![](icons/ub)").replace("cg", "![](icons/cg)").replace("cr", "![](icons/cr)").replace("cb", "![](icons/cb)").replace(",", " ").replace("\n", "  \n")
-        red = (mapStr.count("cr") + mapStr.count("ur")) / 529 * 100
-        blue = (mapStr.count("cb") + mapStr.count("ub")) / 529 * 100
-        green = (mapStr.count("cg") + mapStr.count("ug")) / 529 * 100
+        red = round((mapStr.count("cr") + mapStr.count("ur")) / 529 * 100)
+        blue = round((mapStr.count("cb") + mapStr.count("ub")) / 529 * 100)
+        green = round((mapStr.count("cg") + mapStr.count("ug")) / 529 * 100)
         open("README.md", "w").write(
-            mapStr + "\nR: " + str(red) + "% G: " + str(green) + "% B: " + str(blue) + "\n" + open("tutorial").read()
+            mapStr + "\n**R:** " + str(red) + "% **G:** " + str(green) + "% **B:** " + str(blue) + "\n" + open("tutorial").read()
         )
 
     def mapToStr(self, world: list) -> str:
