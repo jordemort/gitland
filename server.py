@@ -37,7 +37,6 @@ class GameServer:
             if team not in ("cg", "cr", "cb"):
                 if team == "leave":
                     self.clearPlayerData(newPlayer)
-                    self.log(newPlayer + " left the game")
                 else:
                     self.log(newPlayer + " didn't join - invalid team name")
                 continue
@@ -57,8 +56,10 @@ class GameServer:
         open("players/" + player + "/y", "w").write(str(y))
 
     def clearPlayerData(self, player: str):
-        if player.strip() != "": # juuuuuuuuuuust in case
-            os.system("rm -r ./players/" + player)
+        if player.strip() != "" and os.path.isdir("./players/" + player):
+            os.system("rm -r ./players/" + player) # I'm sure there's an os.something for this but whooo carees
+        else:
+            self.log(newPlayer + " didn't leave - no player info found")
 
     def spawnPlayer(self, player: str, team: str):
         # spawn in friendly territory
