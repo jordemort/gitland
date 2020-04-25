@@ -9,3 +9,5 @@ The goal is to paint the whole map with your team's color by moving.
 5. Wait for the next turn (about 60 seconds)
 6. Read the "log" file and the files inside "players/YOURNAME" for intel
 7. Go back to step 4
+
+Usage of bots is encouraged.
