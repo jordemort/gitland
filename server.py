@@ -52,6 +52,10 @@ class GameServer:
         open("players/" + player + "/x", "w").write(str(x))
         open("players/" + player + "/y", "w").write(str(y))
 
+    def clearPlayerData(self, player: str):
+        if player.strip() != "": # juuuuuuuuuuust in case
+            os.system("rm -r ./players/" + player)
+
     def spawnPlayer(self, player: str, team: str):
         # spawn in friendly territory
         x, y = 0, 0
