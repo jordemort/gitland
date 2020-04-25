@@ -26,8 +26,13 @@ class GameServer:
         ).json()
 
         for request in joinRequests:
-            newPlayer = request["user"]["login"]
-            team = request["title"]
+            try:
+                newPlayer = request["user"]["login"]
+                team = request["title"]
+            except Exception as err:
+                self.log("couldn't add players this turn")
+                print(joinRequests)
+                return
 
             # make sure they chose an existing team
             if team not in ("cg", "cr", "cb"):
