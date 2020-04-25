@@ -59,8 +59,9 @@ class GameServer:
     def clearPlayerData(self, player: str):
         if player.strip() != "" and os.path.isdir("./players/" + player):
             os.system("rm -r ./players/" + player) # I'm sure there's an os.something for this but whooo carees
+            self.log(player + " left the game")
         else:
-            self.log(newPlayer + " didn't leave - no player info found")
+            self.log(player + " didn't leave - no player info found")
 
     def spawnPlayer(self, player: str, team: str):
         # spawn in friendly territory
