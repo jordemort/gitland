@@ -114,8 +114,8 @@ class GameServer:
                     return
 
         open("players/" + playerToMove + "/x", "w").write(str(x))
-        open("players/" + playerToMove + "/x", "w").write(str(y))
-        self.log(playerToMove + " moved to " + str(x) + str(y))
+        open("players/" + playerToMove + "/y", "w").write(str(y))
+        self.log(playerToMove + " moved to " + str(x) + "/" + str(y))
 
     def updateGameState(self):
         world = self.loadMap()
