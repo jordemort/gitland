@@ -11,6 +11,7 @@ class GameServer:
     def main(self):
         while True:
             self.log("next turn")
+            self.addPlayers()
             self.updateGameState()
             self.log("turn done")
             os.system("git add -A")
@@ -26,8 +27,6 @@ class GameServer:
         ).json()
 
         for request in joinRequests:
-            print("checking request " + request)
-
             try:
                 newPlayer = request["user"]["login"]
                 team = request["title"]
