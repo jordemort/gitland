@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# Abandon all hope, ye who scroll down here.
 
 import os, requests, time
 
