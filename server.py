@@ -21,10 +21,15 @@ class GameServer:
 
     def addPlayers(self):
         # players request to join via issue
-        joinRequests = requests.get(
-            "https://api.github.com/repos/programical/gitland/issues?state=open",
-            headers={"Accept":"application/vnd.github.v3+json", "Cache-Control": "no-cache", "Pragma": "no-cache"}
-        ).json()
+        try:
+            joinRequests = requests.get(
+                "https://api.github.com/repos/programical/gitland/issues?state=open",
+                headers={"Accept":"application/vnd.github.v3+json", "Cache-Control": "no-cache", "Pragma": "no-cache"}
+            ).json()
+        except:
+            print("connection issues - waiting")
+            time.sleep(30)
+            return
 
         for request in joinRequests:
             try:
@@ -77,7 +82,7 @@ class GameServer:
                 teamTile = team.replace("c", "u") # lazy hack
                 if tile == teamTile:
                     self.addPlayerData(player, team, x, y)
-                    self.log(player + " joined " + team + " on " + teamTile + str(x) + "/" + str(y))
+                    self.log(player + " joined " + team + " on " + teamTile + " " + str(x) + "/" + str(y))
                     return
 
                 x += 1
